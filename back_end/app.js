@@ -10,10 +10,43 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
 const passportConfig = require("./passport");
+const swaggerUi = require("swagger-ui-express");
+const swaggerJSDoc = require("swagger-jsdoc");
 
 const app = express();
 dotenv.config();
 //passportConfig(passport);
+
+//swagger setting
+const swaggerDefinition = {
+  info: {
+    title: "Recoder Server API",
+    version: "1.0.0",
+    description: "API description",
+  },
+  host: "localhost:3000",
+  basePath: "/",
+  securityDefinitions: {
+    bearerAuth: {
+      type: "apiKey",
+      name: "Authorization",
+      scheme: "bearer",
+      in: "header",
+    },
+  },
+};
+
+const options = {
+  swaggerDefinition,
+  apis: ["./schemas/*.js"],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+app.get("/swagger.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
+});
+//swagger end
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -29,6 +62,7 @@ if (process.env.NODE_ENV === "production") {
 
 //middlewares
 app.use(cors());
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(morgan("dev"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
