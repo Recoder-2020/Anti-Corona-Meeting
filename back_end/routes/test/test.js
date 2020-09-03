@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.post("/", async function (req, res, next) {
   try {
-    console.log("Req : ", req);
+    console.log("Req : ", req.body);
   } catch (err) {
     console.log("err : ", err);
     next(err);
@@ -12,7 +12,7 @@ router.post("/", async function (req, res, next) {
 
 router.get("/", async function (req, res, next) {
   try {
-    console.log("Req : ", req.query);
+    console.log("Req.query : ", req.query);
     console.log(typeof req.query.idx);
   } catch (err) {
     console.log("err : ", err);
@@ -22,8 +22,8 @@ router.get("/", async function (req, res, next) {
 
 router.put("/update/:idx", async function (req, res, next) {
   try {
-    console.log("Req : ", req.body);
-    console.log("Req : ", req.params);
+    console.log("Req.boy : ", req.body);
+    console.log("Req.path : ", req.params);
   } catch (err) {
     console.log("err : ", err);
     next(err);
