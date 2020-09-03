@@ -111,16 +111,23 @@ app.use(helmet());
 // //passport deserializeUser 실행
 // app.use(passport.session());
 
-//router
+//test router
 //const usersRouter = require("./routes/users");
 const commonRouter = require("./routes/common");
-const fileUploadRouter = require("./routes/uploadView");
-const testRouter = require("./routes/test");
+const fileUploadRouter = require("./routes/test/uploadView");
+const testRouter = require("./routes/test/test");
+const geolocationViewRouter = require("./routes/test/geolocation_view");
 
 //app.use("/users", usersRouter);
 app.use("/common", commonRouter);
 app.use("/uploadView", fileUploadRouter);
 app.use("/test", testRouter);
+app.use("/geolocationView", geolocationViewRouter);
+
+//dev router
+const geolocationRouter = require("./routes/geolocation");
+
+app.use("/geolocation", geolocationRouter);
 
 //잘못된 경로 접근시 error handler
 app.use((req, res, next) => {

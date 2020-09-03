@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../../public/stylesheets/style.css" />
+  </head>
+  <body>
+    <h1>Geolocation Test</h1>
+    <button type="button" id="button">Get Location</button>
+  </body>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    // const file = document.getElementById('file')
+    // file.addEventListener('change', fileChosen);
+    const button = document.getElementById("button");
+    button.addEventListener("click", getLocation, false);
+    let result;
+    const url = "http://localhost:3000/geolocation/findLocation";
+    async function getLocation() {
+      if (navigator.geolocation) {
+        // GPS를 지원하면
+        navigator.geolocation.getCurrentPosition(
+          function (
+            position //success callback
+          ) {
+            console.log(position);
+            result = position;
+            console.log("resiult : ", result);
+            alert(position.coords.latitude + " " + position.coords.longitude);
+          },
+          function (
+            error //error callback
+          ) {
+            console.error(error);
+          },
+          {
+            enableHighAccuracy: true,
+            maximumAge: 0,
+            timeout: Infinity,
+          }
+        );
+      } else {
+        alert("GPS를 지원하지 않습니다");
+      }
+      axios
+        .post(url, {
+          latitude: result.coords.latitude,
+          longitude: result.coords.longitude,
+        })
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+  </script>
+</html>
