@@ -112,22 +112,17 @@ app.use(helmet());
 // app.use(passport.session());
 
 //test router
-//const usersRouter = require("./routes/users");
-const commonRouter = require("./routes/common");
-const fileUploadRouter = require("./routes/test/uploadView");
-const testRouter = require("./routes/test/test");
-const geolocationViewRouter = require("./routes/test/geolocation_view");
-
-//app.use("/users", usersRouter);
-app.use("/common", commonRouter);
-app.use("/uploadView", fileUploadRouter);
-app.use("/test", testRouter);
+const geolocationViewRouter = require("./routes/geolocation_view");
 app.use("/geolocationView", geolocationViewRouter);
 
 //dev router
 const geolocationRouter = require("./routes/geolocation");
+const roomRouter = require("./routes/room");
+const userRouter = require("./routes/user");
 
 app.use("/geolocation", geolocationRouter);
+app.use("/room", roomRouter);
+app.use("/user", userRouter);
 
 //잘못된 경로 접근시 error handler
 app.use((req, res, next) => {
@@ -139,9 +134,13 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   // res.locals.message = err.message;
   // res.locals.error = req.app.get("env") === "development" ? err : {};
-  // render the error page
-  res.status(err.status || 500);
-  res.render("internal server error");
+  if (err.status < 500) {
+    res.status(err.status).json({ errorMessage: err.errorMessage });
+  } else {
+    // render the error page
+    res.status(err.status || 500);
+    res.render("internal server error");
+  }
 });
 
 module.exports = app;
