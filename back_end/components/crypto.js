@@ -12,3 +12,11 @@ module.exports.createPasswordPbkdf2 = (pw) => {
 module.exports.getPasswordPbkdf2 = (pw, salt) => {
   return crypto.pbkdf2Sync(pw, salt, 99381, 32, "sha512").toString("base64");
 };
+
+module.exports.createRandomRoomCode = (roomIdx) => {
+  const salt = crypto.randomBytes(32).toString("base64");
+  const roomCode = crypto
+    .pbkdf2Sync(roomIdx, salt, 99381, 8, "sha512")
+    .toString("base64");
+  return { roomCode, roomIdx };
+};
